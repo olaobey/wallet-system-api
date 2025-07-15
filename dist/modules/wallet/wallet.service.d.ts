@@ -1,0 +1,33 @@
+import { Repository, DataSource, QueryRunner } from 'typeorm';
+import { Cache } from 'cache-manager';
+import { Wallet } from './entities/wallet.entity';
+import { Transaction } from '../transaction/entities/transaction.entity';
+import { DepositDto } from './dto/deposit.dto';
+import { WithdrawDto } from './dto/withdraw.dto';
+import { TransferDto } from './dto/transfer.dto';
+import { BalanceDto } from './dto/balance.dto';
+import { CreateWalletDto } from './dto/create-wallet.dto';
+import { UpdateWalletDto } from './dto/update-wallet.dto';
+import { QueueService } from '../queue/queue.service';
+export declare class WalletService {
+    private walletRepository;
+    private transactionRepository;
+    private cacheManager;
+    private dataSource;
+    private queueService;
+    private readonly logger;
+    constructor(walletRepository: Repository<Wallet>, transactionRepository: Repository<Transaction>, cacheManager: Cache, dataSource: DataSource, queueService: QueueService);
+    queueDeposit(depositDto: DepositDto): Promise<void>;
+    queueWithdraw(withdrawDto: WithdrawDto): Promise<void>;
+    queueTransfer(transferDto: TransferDto, userId: string): Promise<void>;
+    createWallet(dto: CreateWalletDto, queryRunner?: QueryRunner): Promise<Wallet>;
+    updateWallet(dto: UpdateWalletDto): Promise<Wallet>;
+    deposit(depositDto: DepositDto): Promise<void>;
+    withdraw(withdrawDto: WithdrawDto): Promise<void>;
+    transfer(transferDto: TransferDto): Promise<void>;
+    getBalance(userId: string, currency?: string): Promise<BalanceDto>;
+    getTransactionHistory(userId: string, limit?: number): Promise<Transaction[]>;
+    getOrCreateWallet(userId: string, currency: string, queryRunner?: QueryRunner): Promise<Wallet>;
+    getWalletById(walletId: string, queryRunner?: QueryRunner): Promise<Wallet | null>;
+    private getWallet;
+}
